@@ -1,0 +1,57 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages++
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"				
+			}
+			
+		},
+		{
+			"path": "pages/map/personnelMonitor",
+			"style": {
+				"navigationBarTitleText": "人员监控"				
+			}
+			
+		},
+		{
+			"path": "pages/map/vehicleMonitor",
+			"style": {
+				"navigationBarTitleText": "车辆监控"				
+			}
+			
+		},
+		{
+			"path": "pages/map/personnelTrack",
+			"style": {
+				"navigationBarTitleText": "人员轨迹"				
+			}
+			
+		},
+		{
+			"path": "pages/map/vehicleTrack",
+			"style": {
+				"navigationBarTitleText": "车辆轨迹"				
+			}
+		},
+		{
+			"path": "pages/statistics/personnelStatistics",
+			"style": {
+				"navigationBarTitleText": "人员统计"				
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff"
+	}	
+	
+}

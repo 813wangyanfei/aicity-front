@@ -1,0 +1,25 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/map/personnelMonitor",
+    "pages/map/vehicleMonitor",
+    "pages/map/personnelTrack",
+    "pages/map/vehicleTrack",
+    "pages/statistics/personnelStatistics"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置判断远近的显示。"
+    }
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap69.json"
+}

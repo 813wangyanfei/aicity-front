@@ -1,0 +1,81 @@
+.index-content .index-header {
+    position: fixed;
+    z-index: 160;
+    border-bottom-color: transparent;
+    -webkit-transition: all .4s ease 0s;
+    transform-origin: center;
+    width: 100%;
+}
+
+.index-content .index-header .icon_header {
+    width: 100%;
+    line-height: 45px;
+    position: relative;
+    background: #FC3F78;
+}
+
+.index-content .index-header .icon_header .index-search {
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+    zoom: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-top: 8px;
+    margin: 0 45px 0 10px;
+    padding-bottom: 6px;
+}
+
+.index-content .index-header .icon_header .index-search .icon_search {
+    background: #F6F6F6;
+    border-radius: 40upx;
+    -moz-border-radius: 40upx;
+    -webkit-border-radius: 40upx;
+    -o-border-radius: 40upx;
+    -ms-border-radius: 40upx;
+    height: 66upx;
+    line-height: 66upx;
+    font-size: 26upx;
+    color: #dcdcdc;
+    text-align: left;
+    text-indent: 32upx;
+    position: relative;
+    z-index: 1;
+    zoom: 1;
+    transition: all .4s ease 0s;
+    -o-transition: all .4s ease 0s;
+    -moz-transition: all .4s ease 0s;
+    -webkit-transition: all .4s ease 0s;
+    transform-origin: center;
+
+}
+
+.icon_header .icon_search>.iconfont {
+    margin-right: 20upx;
+    top: 1px;
+    color: #ccc;
+}
+
+.icon_header .icon_suji {
+    position: absolute;
+    top: 0;
+    width: 90upx;
+    text-align: center;
+    right: 0;
+    color: #FFFFFF;
+}
+.icon-gender{
+    position: absolute;
+    top: 0;
+    width: 90upx;
+    text-align: center;
+    left: 16px;
+    color: #FFFFFF;
+}
+
+.icon_header .icon_suji .icon-zuji {
+    font-size: 40upx;
+}
