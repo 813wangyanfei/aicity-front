@@ -80,7 +80,7 @@
 				  }); */
 				  //map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
 				  
-				  map.centerAndZoom(point, 10)
+				  map.centerAndZoom(point, 16)
 				  this.markerFun(p,point,infoWindow,label,map);
 				  }
 			  //var point = new BMap.Point(109.49926175379778, 36.60449676862417)

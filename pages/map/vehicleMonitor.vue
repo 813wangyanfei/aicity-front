@@ -87,7 +87,7 @@
 				  //marker.setLabel(label);
 				  
 				  //map.addOverlay(marker) // 将标注添加到地图中
-				  map.centerAndZoom(point, 10)
+				  map.centerAndZoom(point, 16)
 				  this.markerFun(p,point,infoWindow,label,map);
 				  
 				  }
