@@ -49,14 +49,29 @@
 			this.getPointList();
 		},
 		methods:{
-			handler ({BMap, map}) {
+			async handler ({BMap, map}) {
+				if(this.pointList == undefined || this.pointList.length <= 0){
+					await this.getPointList();
+				}
 			  for (var p of this.pointList) {
+				  console.log("name:"+p.name);
 				  var point = new BMap.Point(p.lng, p.lat);
-				  var icon = new BMap.Icon("../../static/img/map/car.png",new BMap.Size(25,50));
-				  
+				 /* var icon = new BMap.Icon("../../static/img/map/car.png",new BMap.Size(25,50));
 				  var marker = new BMap.Marker(point,{icon:icon}) // 创建标注
-				  marker.setRotation(p.direction);
-				  map.addOverlay(marker) // 将标注添加到地图中
+				  marker.setRotation(p.direction); */
+				  let content ="simNo："+p.SimNo+"<br>速度："+p.velocity+"<br>"+
+								"服务器时间："+p.serverTime+"<br>GPS时间："+p.gpsTime+"<br>"+
+								"位置："+p.location;
+				  
+				  var infoWindow = new BMap.InfoWindow(content, {
+				  					width: 150,     // 信息窗口宽度    
+				  					height: 155,     // 信息窗口高度    
+				  					title: "车牌号："+p.name  // 信息窗口标题   
+				  });
+				  /* marker.addEventListener("click", function (event) {
+				  		map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
+				  }); */
+				  
 				  var label = new BMap.Label(p.name, {offset: new BMap.Size(-5, 50)});
 				  label.setStyle({
 					  padding: "2px",
@@ -70,22 +85,32 @@
 					  maxWidth: "none",
 					  position: "relative",
 				  });
-				  marker.setLabel(label);
+				  //marker.setLabel(label);
+				  
+				  //map.addOverlay(marker) // 将标注添加到地图中
+				  map.centerAndZoom(point, 10)
+				  this.markerFun(p,point,infoWindow,label,map);
+				  
 				  }
-			  //var point = new BMap.Point(109.49926175379778, 36.60449676862417)
-			  console.log(this.pointList)
-			  map.centerAndZoom(point, 10)
-			  //map.centerAndZoom(new BMap.Point(this.pointList[0].lng,this.pointList[0].lat), 10)
 			},
 			getClickInfo (e) {
 				
 			},
-			getPointList (){
+			markerFun(p,points, infoWindows, label,map) {
+				var icon = new BMap.Icon("../../static/img/map/car.png",new BMap.Size(25,50));
+				let markers = new BMap.Marker(points,{icon:icon});
+				markers.setRotation(p.direction);
+				map.addOverlay(markers);  // 将标注添加到地图中
+				markers.setLabel(label);  // 将data中的name添加到地图中
+				// 标注的点击事件
+				markers.addEventListener("click", function (event) {
+				  map.openInfoWindow(infoWindows, points);//参数：窗口、点  根据点击的点出现对应的窗口
+				});
+			  },
+			async getPointList (){
 				const userInfo = uni.getStorageSync('userInfo');
 				if (userInfo) {
-					console.log(this.websiteUrl);
-					console.log(userInfo.userId)
-					uni.request({
+					var [error, res] = await uni.request({
 						url: '/api/getCarGPSDataForH5',
 						method: 'POST',
 						data: {
@@ -95,13 +120,14 @@
 							'Access-Control-Allow-Origin': '*', //跨域加上头
 							'Content-Type': 'application/json'
 						},
-						success: res => {
+						/* success: res => {
 							console.log(res.data)
 							this.pointList = res.data.data;
 						},
 						fail: () => {},
-						complete: () => {}
+						complete: () => {} */
 					});
+					this.pointList = res.data.data;
 				}else{
 					uni.navigateTo({
 						url: '../login/login'

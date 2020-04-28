@@ -3,7 +3,7 @@
 		<form>
 			<view class="cu-form-group margin-top">
 				<view class="title">姓名</view>
-				<input placeholder="输入姓名" name="personnelName" v-model="personnelName" @click="showModal" data-target="RadioModal"></input>
+				<input placeholder="输入姓名" name="personnelName" v-model="personnelName" @tap="showModal" data-target="RadioModal"></input>
 				<view class="title">日期</view>
 				<picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange">
 					<view class="picker">
@@ -14,7 +14,7 @@
 			</view>
 		</form>
 		
-		<!-- <view class="cu-modal" :class="modalName=='RadioModal'?'show':''" @tap="hideModal">
+		<view class="cu-modal" :class="modalName=='RadioModal'?'show':''" @tap="hideModal">
 			<view class="cu-dialog" @tap.stop="">
 				<radio-group class="block" @change="RadioChange">
 					<view class="cu-list menu text-left">
@@ -28,7 +28,7 @@
 					</view>
 				</radio-group>
 			</view>
-		</view> -->
+		</view>
 		
 		<view class="server-place">
 			<baidu-map 
@@ -37,17 +37,6 @@
 			style="height:100%" 
 			:scroll-wheel-zoom="true">
 			</baidu-map>
-			<!-- <map
-				id='map'
-				ref='map'
-				v-bind:style="{height: mapH + 'px'}"
-				style="width: 100%;" 
-				:latitude="latitude" 
-				:longitude="longitude"
-				:scale="scale"
-				:markers="markers">
-			</map> -->
-			
 		</view>
 		
 	</view>
@@ -69,38 +58,7 @@
 			return {
 				center: {lng: 109.45744048529967, lat: 36.49771311230842},
 				zoom: 6,
-				pointList:[
-					{lng:'108.49926175379778',
-					 lat:'36.60449676862417',
-					 name:'张三',
-					 uid:'1'
-					},
-					{lng:'107.59926175379778',
-					 lat:'36.40449676862417',
-					 name:'李四',
-					 uid:'2'
-					},
-					{lng:'109.79926175379778',
-					 lat:'36.50449676862417',
-					 name:'王五',
-					 uid:'3'
-					},
-					{lng:'109.63926175379778',
-					 lat:'36.52449676862417',
-					 name:'王五',
-					 uid:'3'
-					},
-					{lng:'109.55926175379778',
-					 lat:'36.53449676862417',
-					 name:'王五',
-					 uid:'3'
-					},
-					{lng:'109.74926175379778',
-					 lat:'36.65449676862417',
-					 name:'王五',
-					 uid:'3'
-					}
-				],
+				pointList:[],
 				pointTrackList:[],
 				personnelList: [
 					{name:'张三',id:'1'},
@@ -134,9 +92,27 @@
 					url: '../../pages/login/login'
 				});
 			}
+			this.getPersonnels();
 		},
 		methods:{
-			handler ({BMap, map}) {
+			async handler ({BMap, map}) {
+				var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
+				if(this.pointList == undefined || this.pointList.length <= 0){
+					await this.getPersonnelTrack();
+				}
+				//查询出来List循环创建坐标点并存入pointTrackList中
+				for (var p of this.pointList) {
+				  var point = new BMap.Point(p.lng, p.lat);
+				  this.pointTrackList.push(point);
+				}
+				if(this.pointTrackList.length > 0){
+					var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon}) // 创建标注
+					map.addOverlay(markerStart) // 添加开始坐标
+					var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon}) // 创建标注
+					map.addOverlay(markerEnd) // 添加结束坐标
+					var polyline =  new BMap.Polyline(this.pointTrackList, {strokeColor: "blue", strokeWeight: 6, strokeOpacity: 0.5});
+					map.addOverlay(polyline);
+				}
 				
 			},
 			showModal(e) {
@@ -151,38 +127,51 @@
 				//this.personnelName = e.detail.value;
 				this.personnelName = this.personnelList[e.detail.value].name;
 				this.personnelId = this.personnelList[e.detail.value].id;
+				console.log(this.personnelName)
+				console.log(this.personnelId)
 				
 			},
 			DateChange(e) {
 				this.date = e.detail.value
 			},
-			getPersonnelTrack(){
-				uni.request({
-					url: this.websiteUrl+'api/getPersonnelTrackData',
+			async getPersonnelTrack(){
+				var [error, res] = await uni.request({
+					url: '/api/getPersonnelTrackData',
 					method: 'POST',
 					data: {
 						personnelId:this.personnelId,
 						date:this.date
 					},
 					header: {
-						'Access-Control-Allow-Origin': '*',
-					    'Access-Control-Allow-Headers': 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild', //自定义请求头信息
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					/* success: res => {
+						console.log(res.data)
+						this.pointList = res.data.data;
+						
+					},
+					fail: () => {},
+					complete: () => {} */
+				});
+				this.pointList = res.data.data;
+				console.log(this.pointList)
+			},
+			getPersonnels(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/getAllPersonnels',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
 					},
 					success: res => {
 						console.log(res.data)
-						this.pointList = res.data.data;
-						var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
-						//查询出来List循环创建坐标点并存入pointTrackList中
-						for (var p of this.pointList) {
-						  var point = new BMap.Point(p.lng, p.lat);
-						  this.pointTrackList.push(point);
-						}
-						var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon}) // 创建标注
-						map.addOverlay(markerStart) // 添加开始坐标
-						var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon}) // 创建标注
-						map.addOverlay(markerEnd) // 添加结束坐标
-						var polyline =  new BMap.Polyline(this.pointTrackList, {strokeColor: "blue", strokeWeight: 6, strokeOpacity: 0.5});
-						map.addOverlay(polyline);
+						this.personnelList = res.data.data;
 					},
 					fail: () => {},
 					complete: () => {}
@@ -197,7 +186,7 @@
 	.server-place{
 		position: fixed;
 		left: 0;
-		top: 0;
+		top: 5;
 		height: 100vh;
 		width: 100%;
 		background: #ffffff;
