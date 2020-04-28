@@ -54,19 +54,18 @@
 					await this.getPointList();
 				}
 			  for (var p of this.pointList) {
-				  console.log("name:"+p.name);
 				  var point = new BMap.Point(p.lng, p.lat);
 				 /* var icon = new BMap.Icon("../../static/img/map/car.png",new BMap.Size(25,50));
 				  var marker = new BMap.Marker(point,{icon:icon}) // 创建标注
 				  marker.setRotation(p.direction); */
-				  let content ="simNo："+p.SimNo+"<br>速度："+p.velocity+"<br>"+
-								"服务器时间："+p.serverTime+"<br>GPS时间："+p.gpsTime+"<br>"+
-								"位置："+p.location;
+				  let content ="<span style='font-weight:bold;'>simNo：</span>"+p.SimNo+"<br><span style='font-weight:bold;'>速度：</span>"+p.velocity+"<br>"+
+								"<span style='font-weight:bold;'>服务器时间：</span>"+p.serverTime+"<br><span style='font-weight:bold;'>GPS时间：</span>"+p.gpsTime+"<br>"+
+								"<span style='font-weight:bold;'>位置：</span>"+p.location;
 				  
 				  var infoWindow = new BMap.InfoWindow(content, {
 				  					width: 150,     // 信息窗口宽度    
-				  					height: 155,     // 信息窗口高度    
-				  					title: "车牌号："+p.name  // 信息窗口标题   
+				  					height: 160,     // 信息窗口高度    
+				  					title: "<span style='font-weight:bold;'>车牌号：</span>"+p.name  // 信息窗口标题   
 				  });
 				  /* marker.addEventListener("click", function (event) {
 				  		map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口

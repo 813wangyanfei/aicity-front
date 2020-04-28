@@ -65,15 +65,15 @@
 				  });
 				  //marker.setLabel(label);
 				  
-				  let content = "设备号："+p. deviceId+"<br>"+
-				                "simNo："+p.SimNo+"<br>速度："+p.velocity+"<br>"+
-								"服务器时间："+p.serverTime+"<br>GPS时间："+p.gpsTime+"<br>"+
-								"位置："+p.location;
+				  let content = "<span style='font-weight:bold;'>设备号：</span>"+p. deviceId+"<br>"+
+				                "<span style='font-weight:bold;'>simNo：</span>"+p.SimNo+"<br><span style='font-weight:bold;'>速度：</span>"+p.velocity+"<br>"+
+								"<span style='font-weight:bold;'>服务器时间：</span>"+p.serverTime+"<br><span style='font-weight:bold;'>GPS时间：</span>"+p.gpsTime+"<br>"+
+								"<span style='font-weight:bold;'>位置：</span>"+p.location;
 				  
 				  let infoWindow = new BMap.InfoWindow(content, {
-					width: 150,     // 信息窗口宽度    
-					height: 175,     // 信息窗口高度    
-					title: "姓名："+p.name  // 信息窗口标题   
+					width: 155,     // 信息窗口宽度    
+					height: 180,     // 信息窗口高度    
+					title: "<span style='font-weight:bold;'>姓名：</span>"+p.name  // 信息窗口标题   
 				  });
 				  /* marker.addEventListener("click", function (event) {
 					map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
