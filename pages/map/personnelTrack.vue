@@ -2,8 +2,8 @@
 	<view class="server-place">
 		<form>
 			<view class="cu-form-group margin-top">
-				<view class="title">姓名</view>
-				<input placeholder="输入姓名" name="personnelName" v-model="personnelName" @tap="showModal" data-target="RadioModal"></input>
+				<view class="title">人员</view>
+				<input placeholder="请选择人员" name="personnelName" v-model="personnelName" @tap="showModal" data-target="RadioModal"></input>
 				<view class="title">日期</view>
 				<picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange">
 					<view class="picker">
@@ -44,16 +44,6 @@
 
 <script>
 	export default {
-		props: {
-				tipText: {
-					type: String,
-					default: '选择位置'
-				},
-				descText: {
-					type: String,
-					default: '使用当前定位或在地图上标记位置'
-				},
-			},
 		data() {
 			return {
 				center: {lng: 109.45744048529967, lat: 36.49771311230842},

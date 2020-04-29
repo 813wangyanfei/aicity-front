@@ -3,7 +3,7 @@
 		<form>
 			<view class="cu-form-group margin-top">
 				<view class="title">车辆</view>
-				<input placeholder="选择车辆" name="personnelName" v-model="vehicleNo" @tap="showModal" data-target="RadioModal"></input>
+				<input placeholder="请选择车辆" name="personnelName" v-model="vehicleNo" @tap="showModal" data-target="RadioModal"></input>
 				<view class="title">日期</view>
 				<picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange">
 					<view class="picker">
@@ -44,16 +44,6 @@
 
 <script>
 	export default {
-		props: {
-				tipText: {
-					type: String,
-					default: '选择位置'
-				},
-				descText: {
-					type: String,
-					default: '使用当前定位或在地图上标记位置'
-				},
-			},
 		data() {
 			return {
 				center: {lng: 109.45744048529967, lat: 36.49771311230842},

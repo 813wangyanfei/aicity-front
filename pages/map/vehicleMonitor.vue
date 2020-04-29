@@ -1,43 +1,56 @@
 <template>
 	<view class="server-place">
-		<baidu-map 
-		:center="center" 
-		:zoom="zoom" @ready="handler" 
-		style="height:100%" 
-		@click="getClickInfo" 
-		:scroll-wheel-zoom="true">
-		</baidu-map>
-		<!-- <map
-			id='map'
-			ref='map'
-			v-bind:style="{height: mapH + 'px'}"
-			style="width: 100%;" 
-			:latitude="latitude" 
-			:longitude="longitude"
-			:scale="scale"
-			:markers="markers">
-		</map> -->
+		<form>
+			<view class="cu-form-group margin-top">
+				<view class="title">车辆</view>
+				<input placeholder="请选择车辆" name="personnelName" v-model="vehicleNo" @tap="showModal" data-target="RadioModal"></input>
+				<button class='cu-btn bg-green shadow' @click="getPersonnelTrack">确定</button>
+			</view>
+		</form>
 		
+		<view class="cu-modal" :class="modalName=='RadioModal'?'show':''" @tap="hideModal">
+			<view class="cu-dialog" @tap.stop="">
+				<radio-group class="block" @change="RadioChange">
+					<view class="cu-list menu text-left">
+						<view class="cu-item" v-for="(item,index) in vehicleList" :key="index">
+							<label class="flex justify-between align-center flex-sub">
+								<view class="flex-sub">{{item.name}}</view>
+								<radio class="round" :class="radio==index?'checked':''" :checked="radio==index?true:false"
+								 :value="index"></radio>
+							</label>
+						</view>
+					</view>
+				</radio-group>
+			</view>
+		</view>
+		<view class="server-place">
+			<baidu-map 
+			:center="center" 
+			:zoom="zoom" @ready="handler" 
+			style="height:100%" 
+			:scroll-wheel-zoom="true">
+			</baidu-map>
+		</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		props: {
-			tipText: {
-				type: String,
-				default: '选择位置'
-			},
-			descText: {
-				type: String,
-				default: '使用当前定位或在地图上标记位置'
-			},
-		},
 		data() {
 			return {
 				center: {},
 				zoom: 13,
-				pointList:[]
+				pointList:[],
+				vehicleList: [
+					{name:'豫A1234',id:'10'},
+					{name:'豫A3232',id:'3'},
+					{name:'豫B23232',id:'5'},
+					],
+				modalName: null,
+				radio: '',
+				itemName: '',
+				vehicleNo: '',
+				vehicleId:''
 			};
 		},
 		mounted() {
@@ -45,8 +58,7 @@
 			this.initMapH() */
 		},
 		onLoad() {
-			//this.ontrueGetList();
-			this.getPointList();
+			this.getVehicles();
 		},
 		methods:{
 			async handler ({BMap, map}) {
@@ -92,9 +104,6 @@
 				  
 				  }
 			},
-			getClickInfo (e) {
-				
-			},
 			markerFun(p,points, infoWindows, label,map) {
 				var icon = new BMap.Icon("../../static/img/map/car.png",new BMap.Size(25,50));
 				let markers = new BMap.Marker(points,{icon:icon});
@@ -105,6 +114,22 @@
 				markers.addEventListener("click", function (event) {
 				  map.openInfoWindow(infoWindows, points);//参数：窗口、点  根据点击的点出现对应的窗口
 				});
+			  },
+			  showModal(e) {
+			  	this.modalName = e.currentTarget.dataset.target
+			  },
+			  hideModal(e) {
+			  	this.modalName = null
+			  },
+			  RadioChange(e) {
+			  	this.radio = e.detail.value
+			  	//this.name = e.detail
+			  	//this.personnelName = e.detail.value;
+			  	this.vehicleNo = this.vehicleList[e.detail.value].name;
+			  	this.vehicleId = this.vehicleList[e.detail.value].id;
+			  	console.log(this.vehicleNo)
+			  	console.log(this.vehicleId)
+			  	
 			  },
 			async getPointList (){
 				const userInfo = uni.getStorageSync('userInfo');
@@ -132,6 +157,26 @@
 						url: '../login/login'
 					});
 				}
+			},
+			getVehicles(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/getAllVehicles',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					success: res => {
+						console.log(res.data)
+						this.vehicleList = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
 			}
 			
 		},
@@ -149,7 +194,7 @@
 	.server-place{
 		position: fixed;
 		left: 0;
-		top: 0;
+		top: 5;
 		height: 100vh;
 		width: 100%;
 		background: #ffffff;

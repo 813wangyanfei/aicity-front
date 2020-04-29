@@ -1,5 +1,29 @@
 <template>
 	<view class="server-place">
+	<form>
+		<view class="cu-form-group margin-top">
+			<view class="title">人员</view>
+			<input placeholder="请选择人员" name="personnelName" v-model="personnelName" @tap="showModal" data-target="RadioModal"></input>
+			<button class='cu-btn bg-green shadow' @click="getPersonnelTrack">确定</button>
+		</view>
+	</form>
+	
+	<view class="cu-modal" :class="modalName=='RadioModal'?'show':''" @tap="hideModal">
+		<view class="cu-dialog" @tap.stop="">
+			<radio-group class="block" @change="RadioChange">
+				<view class="cu-list menu text-left">
+					<view class="cu-item" v-for="(item,index) in personnelList" :key="index">
+						<label class="flex justify-between align-center flex-sub">
+							<view class="flex-sub">{{item.name}}</view>
+							<radio class="round" :class="radio==index?'checked':''" :checked="radio==index?true:false"
+							 :value="index"></radio>
+						</label>
+					</view>
+				</view>
+			</radio-group>
+		</view>
+	</view>
+	<view class="server-place">
 		<baidu-map 
 		:center="center" 
 		:zoom="zoom" @ready="handler" 
@@ -8,20 +32,11 @@
 		</baidu-map>
 		
 	</view>
+	</view>
 </template>
 
 <script>
 	export default {
-		props: {
-			tipText: {
-				type: String,
-				default: '选择位置'
-			},
-			descText: {
-				type: String,
-				default: '使用当前定位或在地图上标记位置'
-			},
-		},
 		data() {
 			return {
 				center: {
@@ -29,13 +44,23 @@
 					lat: 39.915
 				},
 				zoom: 10,
-				pointList:[]
+				pointList:[],
+				personnelList: [
+					{name:'张三',id:'1'},
+					{name:'李四',id:'3'},
+					{name:'王五',id:'5'},
+					],
+				modalName: null,
+				radio: '',
+				itemName: '',
+				personnelName: '',
+				personnelId:''
 			};
 		},
 		mounted() {
 		},
 		onLoad() {
-			this.getPointList();
+			this.getPersonnels();
 		},
 		methods:{
 			async handler ({BMap, map}) {
@@ -124,6 +149,42 @@
 						url: '../login/login'
 					});
 				}
+			},
+			showModal(e) {
+				this.modalName = e.currentTarget.dataset.target
+			},
+			hideModal(e) {
+				this.modalName = null
+			},
+			RadioChange(e) {
+				this.radio = e.detail.value
+				//this.name = e.detail
+				//this.personnelName = e.detail.value;
+				this.personnelName = this.personnelList[e.detail.value].name;
+				this.personnelId = this.personnelList[e.detail.value].id;
+				console.log(this.personnelName)
+				console.log(this.personnelId)
+				
+			},
+			getPersonnels(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/getAllPersonnels',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					success: res => {
+						console.log(res.data)
+						this.personnelList = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
 			}
 		}
 	}
@@ -131,16 +192,16 @@
 </script>
 
 <style lang="scss">
-	.main{background-image: linear-gradient(45deg, #0081ff, #1cbbb4);}
+	/* .main{background-image: linear-gradient(45deg, #0081ff, #1cbbb4);}
 	// padding-bottom:120rpx;box-sizing: border-box;重要*************************保证页面底部内容不被隐藏也不会出现多余的滚动条
 	.main_box{width:100vw;height: 100vh;padding-bottom:120rpx;box-sizing: border-box;}
 	.main_centent{width: 100%;height: 100vh;color: #fff;letter-spacing: 4rpx;display: flex;align-items: center;justify-content: center;}
 	image{width:750rpx;height: 750rpx;}
-	.cu-btn{margin-left: 15rpx;}
+	.cu-btn{margin-left: 15rpx;} */
 	.server-place{
 		position: fixed;
 		left: 0;
-		top: 0;
+		top: 5;
 		height: 100vh;
 		width: 100%;
 		background: #ffffff;
