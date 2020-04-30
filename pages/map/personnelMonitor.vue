@@ -8,6 +8,7 @@
 		</view>
 	</form>
 	
+	
 	<view class="cu-modal" :class="modalName=='RadioModal'?'show':''" @tap="hideModal">
 		<view class="cu-dialog" @tap.stop="">
 			<radio-group class="block" @change="RadioChange">
