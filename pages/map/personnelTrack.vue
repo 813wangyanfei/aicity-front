@@ -10,7 +10,7 @@
 						{{date}}
 					</view>
 				</picker>
-				<button class='cu-btn bg-green shadow' @click="getPersonnelTrack">确定</button>
+				<button class='cu-btn bg-green shadow' @click="getOnePersonnelTrack">确定</button>
 			</view>
 		</form>
 		
@@ -47,7 +47,7 @@
 		data() {
 			return {
 				center: {lng: 109.45744048529967, lat: 36.49771311230842},
-				zoom: 6,
+				zoom: 12,
 				pointList:[],
 				pointTrackList:[],
 				personnelList: [
@@ -65,7 +65,11 @@
 		},
 		mounted() {
 		},
-		onLoad() {
+		onLoad(option) {
+			if(option.personnelId){
+				this.personnelId = option.personnelId;
+				this.personnelName = option.prsonnelName;
+			}
 			var today = new Date();
 			this.date = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
 			uni.setNavigationBarColor({
@@ -86,23 +90,27 @@
 		},
 		methods:{
 			async handler ({BMap, map}) {
-				var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
+				var icon_start = new BMap.Icon("../../h5/static/img/map/map_start.png",new BMap.Size(32,32));
+				var icon_end = new BMap.Icon("../../h5/static/img/map/map_end.png",new BMap.Size(32,32));
 				if(this.pointList == undefined || this.pointList.length <= 0){
 					await this.getPersonnelTrack();
 				}
 				//查询出来List循环创建坐标点并存入pointTrackList中
 				for (var p of this.pointList) {
-				  var point = new BMap.Point(p.lng, p.lat);
+				  var point = new BMap.Point(p.longitude, p.latitude);
 				  this.pointTrackList.push(point);
 				}
+				console.log("pointTrackList:"+this.pointTrackList)
 				if(this.pointTrackList.length > 0){
-					var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon}) // 创建标注
+					var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon_start}) // 创建标注
 					map.addOverlay(markerStart) // 添加开始坐标
-					var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon}) // 创建标注
+					var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon_end}) // 创建标注
 					map.addOverlay(markerEnd) // 添加结束坐标
 					var polyline =  new BMap.Polyline(this.pointTrackList, {strokeColor: "blue", strokeWeight: 6, strokeOpacity: 0.5});
 					map.addOverlay(polyline);
 				}
+				var point1 = new BMap.Point(this.pointList[0].longitude, this.pointList[0].latitude);
+				map.centerAndZoom(point1, 16)
 				
 			},
 			showModal(e) {
@@ -117,8 +125,6 @@
 				//this.personnelName = e.detail.value;
 				this.personnelName = this.personnelList[e.detail.value].name;
 				this.personnelId = this.personnelList[e.detail.value].id;
-				console.log(this.personnelName)
-				console.log(this.personnelId)
 				
 			},
 			DateChange(e) {
@@ -165,6 +171,11 @@
 					},
 					fail: () => {},
 					complete: () => {}
+				});
+			},
+			getOnePersonnelTrack(){
+				uni.navigateTo({
+					url: '../../pages/map/personnelTrack?personnelId='+this.personnelId+"&prsonnelName="+this.personnelName
 				});
 			}
 		}

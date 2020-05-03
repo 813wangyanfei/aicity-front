@@ -4,10 +4,9 @@
 		<view class="cu-form-group margin-top">
 			<view class="title">人员</view>
 			<input placeholder="请选择人员" name="personnelName" v-model="personnelName" @tap="showModal" data-target="RadioModal"></input>
-			<button class='cu-btn bg-green shadow' @click="getPersonnelTrack">确定</button>
+			<button class='cu-btn bg-green shadow' @click="getPersonnelMonitor">确定</button>
 		</view>
 	</form>
-	
 	
 	<view class="cu-modal" :class="modalName=='RadioModal'?'show':''" @tap="hideModal">
 		<view class="cu-dialog" @tap.stop="">
@@ -60,7 +59,8 @@
 		},
 		mounted() {
 		},
-		onLoad() {
+		onLoad(option) {
+			console.log(option.personnelId);
 			this.getPersonnels();
 		},
 		methods:{
@@ -113,7 +113,7 @@
 			  
 			},
 			markerFun(p,points, infoWindows, label,map) {
-				var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
+				var icon = new BMap.Icon("../../h5/static/img/map/mark.png",new BMap.Size(32,32));
 				let markers = new BMap.Marker(points,{icon:icon});
 				markers.setRotation(p.direction);
 				map.addOverlay(markers);  // 将标注添加到地图中
@@ -185,6 +185,12 @@
 					},
 					fail: () => {},
 					complete: () => {}
+				});
+			},
+			getPersonnelMonitor(){
+				console.log("personnelId:"+this.personnelId);
+				uni.navigateTo({
+					url: '../../pages/map/personnelMonitor?personnelId='+this.personnelId
 				});
 			}
 		}

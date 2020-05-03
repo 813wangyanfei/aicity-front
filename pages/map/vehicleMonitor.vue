@@ -105,7 +105,7 @@
 				  }
 			},
 			markerFun(p,points, infoWindows, label,map) {
-				var icon = new BMap.Icon("../../static/img/map/car.png",new BMap.Size(25,50));
+				var icon = new BMap.Icon("../../h5/static/img/map/car.png",new BMap.Size(25,50));
 				let markers = new BMap.Marker(points,{icon:icon});
 				markers.setRotation(p.direction);
 				map.addOverlay(markers);  // 将标注添加到地图中

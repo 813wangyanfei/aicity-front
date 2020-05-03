@@ -10,7 +10,7 @@
 						{{date}}
 					</view>
 				</picker>
-				<button class='cu-btn bg-green shadow' @click="getPersonnelTrack">确定</button>
+				<button class='cu-btn bg-green shadow' @click="getOneVehicleTrack">确定</button>
 			</view>
 		</form>
 		
@@ -65,7 +65,11 @@
 		},
 		mounted() {
 		},
-		onLoad() {
+		onLoad(option) {
+			if(option.vehicleId){
+				this.vehicleId = option.vehicleId;
+				this.vehicleNo = option.vehicleNo;
+			}
 			var today = new Date();
 			this.date = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
 			uni.setNavigationBarColor({
@@ -86,23 +90,26 @@
 		},
 		methods:{
 			async handler ({BMap, map}) {
-				var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
+				var icon_start = new BMap.Icon("../../h5/static/img/map/map_start.png",new BMap.Size(32,32));
+				var icon_end = new BMap.Icon("../../h5/static/img/map/map_end.png",new BMap.Size(32,32));
 				if(this.pointList == undefined || this.pointList.length <= 0){
 					await this.getvehiclelTrack();
 				}
 				//查询出来List循环创建坐标点并存入pointTrackList中
 				for (var p of this.pointList) {
-				  var point = new BMap.Point(p.lng, p.lat);
+				  var point = new BMap.Point(p.longitude, p.latitude);
 				  this.pointTrackList.push(point);
 				}
 				if(this.pointTrackList.length > 0){
-					var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon}) // 创建标注
+					var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon_start}) // 创建标注
 					map.addOverlay(markerStart) // 添加开始坐标
-					var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon}) // 创建标注
+					var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon_end}) // 创建标注
 					map.addOverlay(markerEnd) // 添加结束坐标
 					var polyline =  new BMap.Polyline(this.pointTrackList, {strokeColor: "blue", strokeWeight: 6, strokeOpacity: 0.5});
 					map.addOverlay(polyline);
 				}
+				var point1 = new BMap.Point(this.pointList[0].longitude, this.pointList[0].latitude);
+				map.centerAndZoom(point1, 12)
 				
 			},
 			showModal(e) {
@@ -165,6 +172,11 @@
 					},
 					fail: () => {},
 					complete: () => {}
+				});
+			},
+			getOneVehicleTrack(){
+				uni.navigateTo({
+					url: '../../pages/map/vehicleTrack?vehicleId='+this.vehicleId+"&vehicleNo="+this.vehicleNo
 				});
 			}
 		}
