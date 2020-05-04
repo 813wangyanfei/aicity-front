@@ -1,25 +1,20 @@
 <template>
 	<view class="qiun-columns">
 		<view class="qiun-bg-white qiun-title-bar qiun-common-mt" >
-			<view class="qiun-title-dot-light">柱状图</view>
-		</view>
-		<view class="qiun-charts">
-			<!--#ifdef MP-ALIPAY -->
-			<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" :style="{'width':cWidth*pixelRatio+'px','height':cHeight*pixelRatio+'px', 'transform': 'scale('+(1/pixelRatio)+')','margin-left':-cWidth*(pixelRatio-1)/2+'px','margin-top':-cHeight*(pixelRatio-1)/2+'px'}"></canvas>
-			<!--#endif-->
-			<!--#ifndef MP-ALIPAY -->
-			<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
-			<!--#endif-->
-		</view>
+					<view class="qiun-title-dot-light">基本折线图</view>
+				</view>
+				<view class="qiun-charts" >
+					<canvas canvas-id="canvasLineA" id="canvasLineA" class="charts" disable-scroll=true @touchstart="touchLineA" @touchmove="moveLineA" @touchend="touchEndLineA"></canvas>
+				</view>
 	</view>
 </template>
 
 <script>
 	import uCharts from '../../js_sdk/u-charts/u-charts/u-charts.js';
 		var _self;
-		var canvaColumn=null;
+		var canvaLineA=null;
 		var Data={
-			"Column": {
+			"LineA": {
 			  "categories": ["2012", "2013", "2014", "2015", "2016", "2017"],
 			  "series": [{
 				"name": "成交量A",
@@ -44,17 +39,6 @@
 			},
 			onLoad() {
 				_self = this;
-				//#ifdef MP-ALIPAY
-				uni.getSystemInfo({
-					success: function (res) {
-						if(res.pixelRatio>1){
-							//正常这里给2就行，如果pixelRatio=3性能会降低一点
-							//_self.pixelRatio =res.pixelRatio;
-							_self.pixelRatio =2;
-						}
-					}
-				});
-				//#endif
 				this.cWidth=uni.upx2px(750);
 				this.cHeight=uni.upx2px(500);
 				this.getServerData();
@@ -68,60 +52,80 @@
 						success: function(res) {
 							console.log(res.data.data)
 							//下面这个根据需要保存后台数据，我是为了模拟更新柱状图，所以存下来了
-							_self.serverData=res.data.data;
-							let Column={categories:[],series:[]};
+							_self.serverData=Data;
+							let LineA={categories:[],series:[]};
 							//这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
-							Column.categories=res.data.data.Column.categories;
-							//这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
-							Column.series=res.data.data.Column.series;
-							_self.showColumn("canvasColumn",Column);
+							LineA.categories=res.data.data.LineA.categories;
+							LineA.series=res.data.data.LineA.series;
+							_self.showLineA("canvasLineA",LineA);
 						},
 						fail: () => {
 							console.log("网络错误，小程序端请检查合法域名");
 						},
 					}); */
-					//下面这个根据需要保存后台数据，我是为了模拟更新柱状图，所以存下来了
 					_self.serverData=Data;
-					let Column={categories:[],series:[]};
+					let LineA={categories:[],series:[]};
 					//这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
-					Column.categories=Data.Column.categories;
-					//这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
-					Column.series=Data.Column.series;
-					_self.showColumn("canvasColumn",Column);
+					LineA.categories=Data.LineA.categories;
+					LineA.series=Data.LineA.series;
+					_self.showLineA("canvasLineA",LineA);
 				},
-				showColumn(canvasId,chartData){
-					canvaColumn=new uCharts({
+				showLineA(canvasId,chartData){
+					canvaLineA=new uCharts({
 						$this:_self,
 						canvasId: canvasId,
-						type: 'column',
-						legend:true,
+						type: 'line',
 						fontSize:11,
+						legend:{show:true},
+						dataLabel:true,
+						dataPointShape:true,
 						background:'#FFFFFF',
 						pixelRatio:_self.pixelRatio,
-						animation: true,
 						categories: chartData.categories,
 						series: chartData.series,
+						animation: false,
+						enableScroll: true,//开启图表拖拽功能
 						xAxis: {
-							disableGrid:true,
+							disableGrid:false,
+							type:'grid',
+							gridType:'dash',
+							itemCount:4,
+							scrollShow:true,
+							scrollAlign:'left',
+							scrollBackgroundColor:'#F7F7FF',
+							scrollColor:'#DEE7F7',
 						},
 						yAxis: {
+							//disabled:true
+							gridType:'dash',
+							splitNumber:8,
+							min:10,
+							max:180,
+							format:(val)=>{return val.toFixed(0)+'元'}
 						},
-						dataLabel: true,
 						width: _self.cWidth*_self.pixelRatio,
 						height: _self.cHeight*_self.pixelRatio,
 						extra: {
-							column: {
-							  width: _self.cWidth*_self.pixelRatio*0.45/chartData.categories.length
-							}
-						  }
+							lineStyle: 'straight'
+						},
+					});
+					
+				},
+				touchLineA(e){
+					canvaLineA.scrollStart(e);
+				},
+				moveLineA(e) {
+					canvaLineA.scroll(e);
+				},
+				touchEndLineA(e) {
+					canvaLineA.scrollEnd(e);
+					//下面是toolTip事件，如果滚动后不需要显示，可不填写
+					canvaLineA.showToolTip(e, {
+						format: function (item, category) {
+							return category + ' ' + item.name + ':' + item.data 
+						}
 					});
 				},
-				changeData(){
-					canvaColumn.updateData({
-						series: _self.serverData.ColumnB.series,
-						categories: _self.serverData.ColumnB.categories
-					});
-				}
 			}
 		}
 	
@@ -137,7 +141,6 @@
 	.qiun-bg-white{background:#FFFFFF;}
 	.qiun-title-bar{width:96%; padding:10upx 2%; flex-wrap:nowrap;}
 	.qiun-title-dot-light{border-left: 10upx solid #0ea391; padding-left: 10upx; font-size: 32upx;color: #000000}
-	/* 通用样式 */
 	.qiun-charts{width: 750upx; height:500upx;background-color: #FFFFFF;}
 	.charts{width: 750upx; height:500upx;background-color: #FFFFFF;}
 </style>

@@ -45,6 +45,24 @@
 			"style": {
 				"navigationBarTitleText": "人员统计"				
 			}
+		},
+		{
+			"path": "pages/statistics/oilCurveStatistics",
+			"style": {
+				"navigationBarTitleText": "油耗曲线"				
+			}
+		},
+		{
+			"path": "pages/statistics/attendStatistics",
+			"style": {
+				"navigationBarTitleText": "考勤统计"				
+			}
+		},
+		{
+			"path": "pages/statistics/alarmRecord",
+			"style": {
+				"navigationBarTitleText": "车辆报警"				
+			}
 		}
 	],
 	"globalStyle": {

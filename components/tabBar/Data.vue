@@ -52,17 +52,20 @@
 					cuIcon: 'clothesfill',
 					color: 'blue',
 					badge: 0,
-					name: '车辆报警'
+					name: '车辆报警',
+					url:'../../pages/statistics/alarmRecord'
 				}, {
 					cuIcon: 'discoverfill',
 					color: 'purple',
 					badge: 0,
-					name: '油耗曲线图'
+					name: '油耗曲线图',
+					url: '../../pages/statistics/oilCurveStatistics'
 				}, {
 					cuIcon: 'questionfill',
 					color: 'mauve',
 					badge: 0,
-					name: '人员考勤统计'
+					name: '人员考勤统计',
+					url:'../../pages/statistics/attendstatistics'
 				}, {
 					cuIcon: 'commandfill',
 					color: 'purple',
@@ -88,9 +91,9 @@
 		
 		methods: {
 			ontrueGetList(){
-				uni.showToast({
+				/* uni.showToast({
 					title:'第3个页面'
-				});
+				}); */
 				uni.setNavigationBarTitle({
 				    title: '统计报表'
 				});
@@ -98,7 +101,6 @@
 				    frontColor: '#000000',
 				    backgroundColor: '#ffffff'
 				})
-				console.log("加载了第三个页面，可以把网络请求放这里")
 			},
 			lower(){
 				uni.showToast({
