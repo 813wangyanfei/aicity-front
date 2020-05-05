@@ -4,7 +4,7 @@
 		<view class="cu-form-group margin-top">
 			<view class="title">人员</view>
 			<input placeholder="请选择人员" name="personnelName" v-model="personnelName" @tap="showModal" data-target="RadioModal"></input>
-			<button class='cu-btn bg-green shadow' @click="getPersonnelMonitor">确定</button>
+			<button class='cu-btn bg-green shadow' @click="getOnePersonnelMonitor">确定</button>
 		</view>
 	</form>
 	
@@ -61,55 +61,62 @@
 		},
 		onLoad(option) {
 			console.log(option.personnelId);
+			if(option.personnelId){
+				this.personnelId = option.personnelId;
+				this.personnelName = option.prsonnelName;
+			}
 			this.getPersonnels();
 		},
 		methods:{
 			async handler ({BMap, map}) {
+				await this.getPointList();
 				if(this.pointList == undefined || this.pointList.length <= 0){
-					await this.getPointList();
+					uni.showToast({
+						title:'未查询到坐标！'
+					})
 				}
-				
-				for (var p of this.pointList) {
-				  var point = new BMap.Point(p.lng, p.lat);
-				  /* var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
-				  this.center.lng = p.lng;
-				  this.center.lat = p.lat;
-				  var marker = new BMap.Marker(point,{icon:icon}) // 创建标注
-				  map.addOverlay(marker) // 将标注添加到地图中 */
-				  var label = new BMap.Label(p.name, {offset: new BMap.Size(5, 35)});
-				  label.setStyle({
-					  padding: "2px",
-					  fontSize: "12px",
-					  height: "20px",
-					  backgroundColor: "#fbffd7",
-					  color: "#333333",
-					  fontWeight: "bold",
-					  fontFamily: "微软雅黑",
-					  border: "1px solid #999999",
-					  maxWidth: "none",
-					  position: "relative",
-				  });
-				  //marker.setLabel(label);
-				  
-				  let content = "<span style='font-weight:bold;'>设备号：</span>"+p. deviceId+"<br>"+
-				                "<span style='font-weight:bold;'>simNo：</span>"+p.SimNo+"<br><span style='font-weight:bold;'>速度：</span>"+p.velocity+"<br>"+
-								"<span style='font-weight:bold;'>服务器时间：</span>"+p.serverTime+"<br><span style='font-weight:bold;'>GPS时间：</span>"+p.gpsTime+"<br>"+
-								"<span style='font-weight:bold;'>位置：</span>"+p.location;
-				  
-				  let infoWindow = new BMap.InfoWindow(content, {
-					width: 155,     // 信息窗口宽度    
-					height: 180,     // 信息窗口高度    
-					title: "<span style='font-weight:bold;'>姓名：</span>"+p.name  // 信息窗口标题   
-				  });
-				  /* marker.addEventListener("click", function (event) {
-					map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
-				  }); */
-				  //map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
-				  
-				  map.centerAndZoom(point, 16)
-				  this.markerFun(p,point,infoWindow,label,map);
-				  }
-			  //var point = new BMap.Point(109.49926175379778, 36.60449676862417)
+				else{
+					for (var p of this.pointList) {
+					  var point = new BMap.Point(p.lng, p.lat);
+					  /* var icon = new BMap.Icon("../../static/img/map/mark.png",new BMap.Size(32,32));
+					  this.center.lng = p.lng;
+					  this.center.lat = p.lat;
+					  var marker = new BMap.Marker(point,{icon:icon}) // 创建标注
+					  map.addOverlay(marker) // 将标注添加到地图中 */
+					  var label = new BMap.Label(p.name, {offset: new BMap.Size(5, 35)});
+					  label.setStyle({
+						  padding: "2px",
+						  fontSize: "12px",
+						  height: "20px",
+						  backgroundColor: "#fbffd7",
+						  color: "#333333",
+						  fontWeight: "bold",
+						  fontFamily: "微软雅黑",
+						  border: "1px solid #999999",
+						  maxWidth: "none",
+						  position: "relative",
+					  });
+					  //marker.setLabel(label);
+					  
+					  let content = "<span style='font-weight:bold;'>设备号：</span>"+p. deviceId+"<br>"+
+					                "<span style='font-weight:bold;'>simNo：</span>"+p.SimNo+"<br><span style='font-weight:bold;'>速度：</span>"+p.velocity+"<br>"+
+									"<span style='font-weight:bold;'>服务器时间：</span>"+p.serverTime+"<br><span style='font-weight:bold;'>GPS时间：</span>"+p.gpsTime+"<br>"+
+									"<span style='font-weight:bold;'>位置：</span>"+p.location;
+					  
+					  let infoWindow = new BMap.InfoWindow(content, {
+						width: 155,     // 信息窗口宽度    
+						height: 180,     // 信息窗口高度    
+						title: "<span style='font-weight:bold;'>姓名：</span>"+p.name  // 信息窗口标题   
+					  });
+					  /* marker.addEventListener("click", function (event) {
+						map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
+					  }); */
+					  //map.openInfoWindow(infoWindow, point);//参数：窗口、点  根据点击的点出现对应的窗口
+					  
+					  map.centerAndZoom(point, 16)
+					  this.markerFun(p,point,infoWindow,label,map);
+					  }
+				}
 			  
 			},
 			markerFun(p,points, infoWindows, label,map) {
@@ -130,7 +137,8 @@
 						url: '/api/getPersonGPSDataForH5',
 						method: 'POST',
 						data: {
-							userId:userInfo.userId
+							userId:userInfo.userId,
+							personnelId:this.personnelId
 						},
 						header: {
 							'Access-Control-Allow-Origin': '*', //跨域加上头
@@ -187,10 +195,10 @@
 					complete: () => {}
 				});
 			},
-			getPersonnelMonitor(){
+			getOnePersonnelMonitor(){
 				console.log("personnelId:"+this.personnelId);
 				uni.navigateTo({
-					url: '../../pages/map/personnelMonitor?personnelId='+this.personnelId
+					url: '../../pages/map/personnelMonitor?personnelId='+this.personnelId+"&prsonnelName="+this.personnelName
 				});
 			}
 		}

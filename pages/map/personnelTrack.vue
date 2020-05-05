@@ -92,25 +92,29 @@
 			async handler ({BMap, map}) {
 				var icon_start = new BMap.Icon("../../h5/static/img/map/map_start.png",new BMap.Size(32,32));
 				var icon_end = new BMap.Icon("../../h5/static/img/map/map_end.png",new BMap.Size(32,32));
+				await this.getPersonnelTrack();
 				if(this.pointList == undefined || this.pointList.length <= 0){
-					await this.getPersonnelTrack();
+					uni.showToast({
+						title:'未查询到轨迹！'
+					})
+				}else{
+					//查询出来List循环创建坐标点并存入pointTrackList中
+					for (var p of this.pointList) {
+					  var point = new BMap.Point(p.longitude, p.latitude);
+					  this.pointTrackList.push(point);
+					}
+					console.log("pointTrackList:"+this.pointTrackList)
+					if(this.pointTrackList.length > 0){
+						var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon_start}) // 创建标注
+						map.addOverlay(markerStart) // 添加开始坐标
+						var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon_end}) // 创建标注
+						map.addOverlay(markerEnd) // 添加结束坐标
+						var polyline =  new BMap.Polyline(this.pointTrackList, {strokeColor: "blue", strokeWeight: 6, strokeOpacity: 0.5});
+						map.addOverlay(polyline);
+					}
+					var point1 = new BMap.Point(this.pointList[0].longitude, this.pointList[0].latitude);
+					map.centerAndZoom(point1, 16)
 				}
-				//查询出来List循环创建坐标点并存入pointTrackList中
-				for (var p of this.pointList) {
-				  var point = new BMap.Point(p.longitude, p.latitude);
-				  this.pointTrackList.push(point);
-				}
-				console.log("pointTrackList:"+this.pointTrackList)
-				if(this.pointTrackList.length > 0){
-					var markerStart = new BMap.Marker(this.pointTrackList[0],{icon:icon_start}) // 创建标注
-					map.addOverlay(markerStart) // 添加开始坐标
-					var markerEnd = new BMap.Marker(this.pointTrackList[this.pointTrackList.length-1],{icon:icon_end}) // 创建标注
-					map.addOverlay(markerEnd) // 添加结束坐标
-					var polyline =  new BMap.Polyline(this.pointTrackList, {strokeColor: "blue", strokeWeight: 6, strokeOpacity: 0.5});
-					map.addOverlay(polyline);
-				}
-				var point1 = new BMap.Point(this.pointList[0].longitude, this.pointList[0].latitude);
-				map.centerAndZoom(point1, 16)
 				
 			},
 			showModal(e) {
