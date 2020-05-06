@@ -63,6 +63,12 @@
 			"style": {
 				"navigationBarTitleText": "车辆报警"				
 			}
+		},
+		{
+			"path": "pages/patrol/patrol",
+			"style": {
+				"navigationBarTitleText": "业务巡查"				
+			}
 		}
 	],
 	"globalStyle": {

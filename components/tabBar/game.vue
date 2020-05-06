@@ -80,6 +80,9 @@
 					<view class="action">
 						<text class="cuIcon-title text-orange "></text> 业务巡查
 					</view>
+					<view class="action" @click="navTo('../../pages/patrol/patrol')" >
+						巡查
+					</view>
 				</view>
 				<view class="cu-item">
 					<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
@@ -253,6 +256,11 @@
 			Gridswitch(e) {
 				this.gridBorder = e.detail.value
 			},
+			navTo(url){
+				uni.navigateTo({
+					url:url
+				})
+			}
 		}
 	}
 </script>
