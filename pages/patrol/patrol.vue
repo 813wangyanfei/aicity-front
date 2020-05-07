@@ -60,6 +60,9 @@
 					</view>
 				</view>
 			</view>
+			<view class="padding flex flex-direction">
+				<button class="cu-btn bg-blue margin-tb-sm lg">提交</button>
+			</view>
 			
 		</form>
 	</view>
@@ -79,6 +82,17 @@
 				textareaBValue: ''
 			};
 		},
+		onLoad(option) {
+			var myDate = new Date(); //实例一个时间对象；
+			var year = myDate.getFullYear();   //获取系统的年；
+			var month = myDate.getMonth()+1;   //获取系统月份，由于月份是从0开始计算，所以要加1
+			var date = myDate.getDate(); // 获取系统日，
+			var hour = myDate.getHours(); //获取系统时，
+			var minutes = myDate.getMinutes(); //分
+			var seconds = myDate.getSeconds(); //秒
+			this.time = hour+":"+minutes;
+			this.date = year+"-"+month+"-"+date;
+		},
 		methods: {
 			TimeChange(e) {
 				this.time = e.detail.value
@@ -95,6 +109,7 @@
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
+						console.log("图片路径："+res.tempFilePaths)
 						if (this.imgList.length != 0) {
 							this.imgList = this.imgList.concat(res.tempFilePaths)
 						} else {
