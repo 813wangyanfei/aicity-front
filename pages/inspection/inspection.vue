@@ -24,7 +24,7 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">日期选择</view>
-				<picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange">
+				<picker mode="date" :value="date" @change="DateChange">
 					<view class="picker">
 						{{date}}
 					</view>
@@ -32,7 +32,7 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">时间选择</view>
-				<picker mode="time" :value="time" start="09:01" end="21:01" @change="TimeChange">
+				<picker mode="time" :value="time" @change="TimeChange">
 					<view class="picker">
 						{{time}}
 					</view>
@@ -74,7 +74,7 @@
 			return {
 				index: -1,
 				picker: ['张三', '李四', '王五'],
-				time: '12:01',
+				time: '21:22',
 				date: '2018-12-25',
 				imgList: [],
 				modalName: null,
@@ -86,12 +86,17 @@
 			var myDate = new Date(); //实例一个时间对象；
 			var year = myDate.getFullYear();   //获取系统的年；
 			var month = myDate.getMonth()+1;   //获取系统月份，由于月份是从0开始计算，所以要加1
+			var newMonth = month>9?month:"0"+month;  //月
 			var date = myDate.getDate(); // 获取系统日，
+			var newDate = date>9?date:"0"+date;  //月
 			var hour = myDate.getHours(); //获取系统时，
+			var newhour = hour>9?hour:"0"+hour;  //小时
 			var minutes = myDate.getMinutes(); //分
+			var newMinutes = minutes>9?minutes:"0"+minutes;  //分
 			var seconds = myDate.getSeconds(); //秒
-			this.time = hour+":"+minutes;
-			this.date = year+"-"+month+"-"+date;
+			var newSeconds = seconds>9?seconds:"0"+seconds;  //秒
+			this.time = hour+':'+minutes;
+			this.date = year+'-'+newMonth+'-'+newDate;
 		},
 		methods: {
 			TimeChange(e) {

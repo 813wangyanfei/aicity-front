@@ -80,7 +80,7 @@
 					<view class="action">
 						<text class="cuIcon-title text-orange "></text> 业务巡查
 					</view>
-					<view class="action" @click="navTo('../../pages/patrol/patrol')" >
+					<view class="action" @click="navTo('../../pages/inspection/inspection')" >
 						巡查
 					</view>
 				</view>

@@ -65,7 +65,7 @@
 			}
 		},
 		{
-			"path": "pages/patrol/patrol",
+			"path": "pages/inspection/inspection",
 			"style": {
 				"navigationBarTitleText": "业务巡查"				
 			}
