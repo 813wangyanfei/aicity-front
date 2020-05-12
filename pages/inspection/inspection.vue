@@ -11,8 +11,8 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">位置</view>
-				<input placeholder="请选择位置"  name="position" v-model="position"></input>
-				<text class='cuIcon-locationfill text-orange'></text>
+				<input placeholder="请输入位置"  name="position" v-model="position"></input>
+				<text class='cuIcon-locationfill text-orange' @tap="myclick"></text>
 			</view>
 			<view class="cu-form-group margin-top">
 				<view class="title">上报人员</view>
@@ -107,11 +107,11 @@
 				modalName: null,
 				textareaAValue: '',
 				textareaBValue: '',
-				uploadFileUrl: 'http://localhost:8888', //替换成你的后端接收文件地址
-				header: {
-					// 如果需要header，请上传
-				},
-				attachmentList: []
+				userName:'',
+				userId:'',
+				attachmentList: [],
+				lng:'',
+				lat:''
 			};
 		},
 		onLoad(option) {
@@ -129,12 +129,17 @@
 			var newSeconds = seconds>9?seconds:"0"+seconds;  //秒
 			this.time = hour+':'+minutes;
 			this.date = year+'-'+newMonth+'-'+newDate;
+			this.getPersonnels();
 		},
 		methods: {
             bindPickerChanges: function(e) {
                 this.index = e.detail.value
 				this.reportIndex = 1
                 console.log('可以传data-xx:xx',e.currentTarget.dataset.index,'\n默认传过来的是下标：',e.detail.value,'\n也可以传普通json传过来的id等：',e.currentTarget.dataset.id);
+				this.userId = this.objectArray[e.detail.value].id,
+				this.userName = this.objectArray[e.detail.value].name
+				console.log("userId:"+this.userId)
+				console.log("userName:"+this.userName)
             },
 			TimeChange(e) {
 				this.time = e.detail.value
@@ -147,6 +152,7 @@
 				console.log(e.detail)
 			}, */
 			ChooseImage() {
+				var that = this;
 				uni.chooseImage({
 					count: 4, //默认9
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
@@ -154,10 +160,10 @@
 					success: (res) => {
 						console.log("res:"+res)
 						console.log("图片路径："+res.tempFilePaths)
-						if (this.imgList.length != 0) {
-							this.imgList = this.imgList.concat(res.tempFilePaths)
+						if (that.imgList.length != 0) {
+							that.imgList = that.imgList.concat(res.tempFilePaths)
 						} else {
-							this.imgList = res.tempFilePaths
+							that.imgList = res.tempFilePaths
 						}
 						const tempFilePaths = res.tempFilePaths;
 						console.log("0000")
@@ -176,14 +182,14 @@
 							success: result => {
 								console.log("返回結果data："+result.data);
 								var temporary=JSON.parse(result.data);
-								this.attachmentList.push(temporary.data);
+								that.attachmentList.push(temporary.data);
 								console.log("temporary"+temporary)
 								console.log("返回結果Code："+temporary.code);
 								console.log("原始文件名："+temporary.data.originalFilename);
 								console.log("文件路徑："+temporary.data.filePath);
 								console.log("新文件名："+temporary.data.fileName);
 								console.log("文件大小："+temporary.data.fileSize);
-								console.log("attachmentList:"+this.attachmentList)
+								console.log("attachmentList:"+that.attachmentList)
 							}
 						});
 					}
@@ -212,6 +218,21 @@
 			textareaBInput(e) {
 				this.textareaBValue = e.detail.value
 			},
+			myclick() {
+				var that = this;
+				uni.chooseLocation({
+					success: function (res) {
+						console.log('位置名称：' + res.name);
+						console.log('详细地址：' + res.address);
+						console.log('纬度：' + res.latitude);
+						console.log('经度：' + res.longitude);
+						that.position = res.address;
+						that.lng = res.longitude;
+						that.lat = res.latitude;
+					}
+				});
+ 
+			},
 			/* uploadSuccess(result) {
 				if(result.statusCode == 200) {
 					//上传成功的回调处理
@@ -226,6 +247,26 @@
 					});
 				}
 			}, */
+			getPersonnels(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/getPersonnels',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					success: res => {
+						console.log(res.data)
+						this.objectArray = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 			submit(){
 				uni.request({
 					url: '/api/insertInspection',
@@ -234,6 +275,10 @@
 						title:this.title,
 						content:this.content,
 						position:this.position,
+						userId:this.userId,
+						userName:this.userName,
+						lng:this.lng,
+						lat:this.lat,
 						attachmentList:this.attachmentList
 					},
 					header: {
