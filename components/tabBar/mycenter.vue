@@ -7,8 +7,11 @@
 					<image class="portrait" src="../../static/img/userCenter/missing-face.png"></image>
 				</view>
 				<view class="info-box">
-					<text class="username">张三</text>
+					<text class="username">{{userName}}</text>
 				</view>
+			</view>
+			<view class="right">
+				<text @tap="exit">退出</text>
 			</view>
 			<view class="vip-card-box">
 				<image class="card-bg" src="../../static/img/userCenter/vip-card-bg.png" mode=""></image>
@@ -19,8 +22,8 @@
 					<text class="yticon icon-iLinkapp-"></text>
 					会员
 				</view>
-				<text class="e-m">张三</text>
-				<text class="e-b">1300000000</text>
+				<text class="e-m">{{userName}}</text>
+				<text class="e-b">{{phoneNumber}}</text>
 			</view>
 		</view>
 		
@@ -53,13 +56,12 @@
 				coverTransform: 'translateY(0px)',
 				coverTransition: '0s',
 				moving: false,
+				userName:'',
+				phoneNumber:''
 			}
 		},
 		methods: {
 			ontrueGetList(){
-				uni.showToast({
-					title:'第2个页面'
-				})
 				uni.setNavigationBarTitle({
 				    title: '个人中心'
 				});
@@ -67,6 +69,10 @@
 				    frontColor: '#000000',
 				    backgroundColor: '#ffffff'
 				})
+				const userInfo = uni.getStorageSync('userInfo')
+				console.log("用户信息："+userInfo)
+				this.userName = userInfo.loginName;
+				this.phoneNumber = userInfo.phonenumber;
 				console.log("加载了第五个页面，可以把网络请求放这里")
 			},
 			lower(){
@@ -74,6 +80,13 @@
 					title:'scroll-view的加载更多'
 				})
 				console.log("分页数据可以放这里~~~~~~嘿嘿")
+			},
+			exit(){
+				uni.removeStorageSync('userInfo');
+				uni.navigateTo({
+					url: '../../pages/login/login'
+				});
+				console.log("退出")
 			}
 		}
 	}
@@ -126,7 +139,12 @@
 			font-weight: bold;
 		}
 	}
-	
+	.right{
+		position:relative;
+		text-align:right;
+		font-weight: bold;
+		margin-bottom:10px;
+	}
 	.vip-card-box{
 		display:flex;
 		flex-direction: column;

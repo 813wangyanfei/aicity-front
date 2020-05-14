@@ -84,9 +84,28 @@
 						巡查
 					</view>
 				</view>
-				<view class="cu-item">
+				
+				<view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="getDetail" :data-inspectionId="item.id">
 					<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
-						<!-- <view class="cu-tag badge">99+</view> -->
+					</view>
+					<view class="content">
+						<view class="text-grey">
+							<view class="text-cut">{{item.title}}</view>
+						</view>
+						<view class="text-gray text-sm flex">
+							<view class="text-cut">
+								{{item.content}}
+							</view>
+						</view>
+					</view>
+					<view class="action">
+						<view class="text-grey text-xs">{{item.createTime}}</view>
+						<!-- <view class="cuIcon-notice_forbid_fill text-gray"></view> -->
+					</view>
+				</view>
+				
+				<!-- <view class="cu-item">
+					<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
 					</view>
 					<view class="content">
 						<view class="text-grey">
@@ -100,7 +119,6 @@
 					</view>
 					<view class="action">
 						<view class="text-grey text-xs">03-28 10:20</view>
-						<!-- <view class="cuIcon-notice_forbid_fill text-gray"></view> -->
 					</view>
 				</view>
 				<view class="cu-item ">
@@ -138,8 +156,8 @@
 					<view class="action">
 						<view class="text-grey text-xs">04-01 22:20</view>
 					</view>
-				</view>
-			</view>
+				</view>-->
+			</view> 
 		</scroll-view>
 	</view>
 </template>
@@ -177,7 +195,8 @@
 					id: 6,
 					type: 'image',
 					url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big99008.jpg'
-				}]
+				}],
+				inspectionList:[]
 			}
 		},
 		onLoad() {
@@ -260,7 +279,34 @@
 				uni.navigateTo({
 					url:url
 				})
+			},
+			getInspectionList(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/getInspectionList',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					success: res => {
+						console.log(res.data)
+						this.objectArray = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			getDetail(){
+				var inspectionId = e.currentTarget.dataset.inspectionId;
+				uni.navigateTo({
+					url: '../../pages/inspection/inspection?inspectionId'+inspectionId
+				});
 			}
+			
 		}
 	}
 </script>

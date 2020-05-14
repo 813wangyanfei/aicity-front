@@ -1,10 +1,86 @@
 <template>
 	<view class="main">
-		 <scroll-view class="main_box" scroll-y="true"  @scrolltolower="lower">
-			<view class="main_centent">第4个页面(上拉加载更多)</view>	
-			<image src="../../static/img/7.jpg" mode="aspectFit"></image>
-			<image src="../../static/img/3.jpg" mode="aspectFit"></image>
-		</scroll-view>
+		 <scroll-view class="main_box" scroll-y="true">
+		 	<view class="cu-list menu-avatar">
+		 		<view class="cu-bar bg-white solid-bottom">
+		 			<view class="action">
+		 				<text class="cuIcon-title text-orange "></text> 待审核列表
+		 			</view>
+		 		</view>
+		 		
+		 		<!-- <view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="getDetail" :data-inspectionId="item.id">
+		 			<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
+		 			</view>
+		 			<view class="content">
+		 				<view class="text-grey">
+		 					<view class="text-cut">{{item.title}}</view>
+		 				</view>
+		 				<view class="text-gray text-sm flex">
+		 					<view class="text-cut">
+		 						{{item.content}}
+		 					</view>
+		 				</view>
+		 			</view>
+		 			<view class="action">
+		 				<view class="text-grey text-xs">{{item.createTime}}</view>
+		 			</view>
+		 		</view> -->
+		 		
+		 		<view class="cu-item">
+		 			<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
+		 			</view>
+		 			<view class="content">
+		 				<view class="text-grey">
+		 					<view class="text-cut">中原区大学路发现垃圾</view>
+		 				</view>
+		 				<view class="text-gray text-sm flex">
+		 					<view class="text-cut">
+		 						中原区大学路发现垃圾，测试巡查内容，测试巡查内容，测试巡查内容，测试巡查内容，测试巡查内容，测试巡查内容。
+		 					</view>
+		 				</view>
+		 			</view>
+		 			<view class="action">
+		 				<view class="text-grey text-xs">03-28 10:20</view>
+		 			</view>
+		 		</view>
+		 		<view class="cu-item ">
+		 			<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view>
+		 			<view class="content">
+		 				<view class="text-pink"><view class="text-cut">金水区三全路发现垃圾桶破损</view></view>
+		 				<view class="text-gray text-sm flex"> <view class="text-cut">金水区三全路发现垃圾桶破损！金水区三全路发现垃圾桶破损！金水区三全路发现垃圾桶破损！金水区三全路发现垃圾桶破损！</view></view>
+		 			</view>
+		 			<view class="action">
+		 				<view class="text-grey text-xs">03-29 22:20</view>
+		 			</view>
+		 		</view>
+		 		<view class="cu-item grayscale">
+		 			<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big81007.jpg);"></view>
+		 			<view class="content">
+		 				<view><view class="text-cut">高新区科学大道发现垃圾桶破损</view>
+		 				</view>
+		 				<view class="text-gray text-sm flex"> <view class="text-cut"> 高新区科学大道发现垃圾桶破损！高新区科学大道发现垃圾桶破损高新区科学大道发现垃圾桶破损高新区科学大道发现垃圾桶破损</view></view>
+		 			</view>
+		 			<view class="action">
+		 				<view class="text-grey text-xs">03-29 22:20</view>
+		 			</view>
+		 		</view>
+		 		<view class="cu-item cur">
+		 			<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big81020.jpg);">
+		 				<view class="cu-tag badge"></view>
+		 			</view>
+		 			<view class="content">
+		 				<view>
+		 					<view class="text-cut">高新区科学大道发现垃圾桶破损</view>
+		 				</view>
+		 				<view class="text-gray text-sm flex">
+		 					<view class="text-cut"> 高新区科学大道发现垃圾桶破损！高新区科学大道发现垃圾桶破损高新区科学大道发现垃圾桶破损高新区科学大道发现垃圾桶破损</view></view>
+		 			</view>
+		 			<view class="action">
+		 				<view class="text-grey text-xs">04-01 22:20</view>
+		 			</view>
+		 		</view>
+		 	</view> 
+		 </scroll-view>
 	</view>
 </template>
 
@@ -39,9 +115,5 @@
 </script>
 
 <style lang="scss">
-	.main{background-image: linear-gradient(45deg, #9000ff, #5e00ff);}
-	// padding-bottom:120rpx;box-sizing: border-box;重要*************************保证页面底部内容不被隐藏也不会出现多余的滚动条
-	.main_box{width:100vw;height: 100vh;padding-bottom:120rpx;box-sizing: border-box;}
-	.main_centent{width: 100%;height: 100vh;color: #fff;letter-spacing: 4rpx;display: flex;align-items: center;justify-content: center;}
-	image{width:750rpx;height: 750rpx;}
+	
 </style>

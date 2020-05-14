@@ -108,7 +108,8 @@
 				textareaAValue: '',
 				textareaBValue: '',
 				userName:'',
-				userId:'',
+				reportingPersonnelId:'',
+				reportingPersonnelName:'',
 				attachmentList: [],
 				lng:'',
 				lat:''
@@ -136,10 +137,10 @@
                 this.index = e.detail.value
 				this.reportIndex = 1
                 console.log('可以传data-xx:xx',e.currentTarget.dataset.index,'\n默认传过来的是下标：',e.detail.value,'\n也可以传普通json传过来的id等：',e.currentTarget.dataset.id);
-				this.userId = this.objectArray[e.detail.value].id,
-				this.userName = this.objectArray[e.detail.value].name
-				console.log("userId:"+this.userId)
-				console.log("userName:"+this.userName)
+				this.reportingPersonnelId = this.objectArray[e.detail.value].id,
+				this.reportingPersonnelName = this.objectArray[e.detail.value].name
+				console.log("reportingPersonnelId:"+this.reportingPersonnelId)
+				console.log("reportingPersonnelName:"+this.reportingPersonnelName)
             },
 			TimeChange(e) {
 				this.time = e.detail.value
@@ -269,17 +270,19 @@
 			},
 			submit(){
 				uni.request({
-					url: '/api/insertInspection',
+					url: '/api/businessInspection/add',
 					method: 'POST',
 					data: {
 						title:this.title,
 						content:this.content,
 						position:this.position,
-						userId:this.userId,
-						userName:this.userName,
+						reportingPersonnelId:this.reportingPersonnelId,
+						reportingPersonnelName:this.reportingPersonnelName,
 						lng:this.lng,
 						lat:this.lat,
-						attachmentList:this.attachmentList
+						attachmentList:this.attachmentList,
+						reportingDate:this.date,
+						reportingTime:this.time
 					},
 					header: {
 						'Access-Control-Allow-Origin': '*', //跨域加上头
@@ -287,6 +290,14 @@
 					},
 					success: res => {
 						console.log(res.data)
+						if(res.data.code == 0){
+							uni.showToast({
+								title:'上报成功'
+							})
+							uni.navigateTo({
+								url: '../../pages/index/index'
+							});
+						}
 					},
 					fail: () => {},
 					complete: () => {}
