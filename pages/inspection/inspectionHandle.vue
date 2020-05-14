@@ -54,23 +54,19 @@
 				</view>
 				
 			</view>
-			<!-- <view class="cu-form-group">
-				<view class="grid col-4 grid-square flex-sub">
-					<view class="bg-img" v-for="(item,index) in imgList" :key="index" @tap="ViewImage" :data-url="imgList[index]">
-					 <image :src="imgList[index]" mode="aspectFill"></image>
-						<view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
-							<text class='cuIcon-close'></text>
-						</view>
+			<view class="cu-form-group margin-top">
+				<view class="title">交办人员</view>
+				<picker @change="bindPickerChanges" range-key="name" :data-index="22" :data-id="handlePersonnelList[index].id" :value="index" :range="handlePersonnelList">
+					<view class="picker">
+						<!-- {{index>-1?objectArray[index].name:'请选择上报人员'}} -->
+						{{reportIndex>-1?handlePersonnelList[index].name:'请选择交办人员'}}
 					</view>
-					<view class="solids" @tap="ChooseImage" v-if="imgList.length<4">
-						<text class='cuIcon-cameraadd'></text>
-					</view>
-				</view>
-			</view> -->
-			<!-- <view class="padding flex flex-direction">
-				<button class="cu-btn bg-blue margin-tb-sm lg" @tap="submit">提交</button>
-			</view> -->
-			
+					<input type="text" :value="handlePersonnelList[index].id" hidden/>
+				</picker>
+			</view>
+			<view class="padding flex flex-direction">
+				<button class="cu-btn bg-blue margin-tb-sm lg" @tap="submit">交办</button>
+			</view>
 		</form>
 	</view>
 </template>
@@ -85,16 +81,35 @@
 				content: '',
 				position: '',
 				reportIndex: -1,
+				index: 0,
 				reportingPersonnelName:'',
 				reportingDate:'',
 				reportingTime:'',
 				createTime:'',
+				handlePersonnelList: [{
+						id: 11,
+						name: '张三'
+					},
+					{
+						id: 12,
+						name: '李四'
+					},
+					{
+						id: 13,
+						name: '王五'
+					},
+					{
+						id: 14,
+						name: '赵六'
+					}
+				],
+				handlePersonnelId:'',
+				handlePersonnelName:'',
 				imgUrl:'',
 				imgList:[]
 			};
 		},
 		onLoad(e) {
-			console.log(e)
 			uni.request({
 				url: '/api/businessInspection/getInspectionDetail',
 				method: 'POST',
@@ -102,7 +117,7 @@
 					inspectionId:e.inspectionId
 				},
 				success: res => {
-					console.log(res.data.data)
+					console.log(res)
 					this.title = res.data.data.title;
 					this.content = res.data.data.content;
 					this.position = res.data.data.position;
@@ -116,9 +131,38 @@
 				fail: () => {},
 				complete: () => {}
 			});
+			this.getPersonnels();
 		},
 		methods: {
-            
+            bindPickerChanges: function(e) {
+                this.index = e.detail.value
+            	this.reportIndex = 1
+                console.log('可以传data-xx:xx',e.currentTarget.dataset.index,'\n默认传过来的是下标：',e.detail.value,'\n也可以传普通json传过来的id等：',e.currentTarget.dataset.id);
+            	this.handlePersonnelId = this.handlePersonnelList[e.detail.value].id,
+            	this.handlePersonnelName = this.handlePersonnelList[e.detail.value].name
+            	console.log("reportingPersonnelId:"+this.handlePersonnelId)
+            	console.log("reportingPersonnelName:"+this.handlePersonnelName)
+            },
+			getPersonnels(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/getPersonnels',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					success: res => {
+						console.log(res.data)
+						this.handlePersonnelList = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 		}
 	};
 </script>

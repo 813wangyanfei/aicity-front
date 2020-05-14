@@ -6,8 +6,26 @@
 		 			<view class="action">
 		 				<text class="cuIcon-title text-orange "></text> 待审核列表
 		 			</view>
+					<view @tap="businessHandle">查看详情</view>
 		 		</view>
-		 		
+		 		<view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="businessHandle(item.id)">
+		 			<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
+		 			</view>
+		 			<view class="content">
+		 				<view class="text-grey">
+		 					<view class="text-cut">{{item.title}}</view>
+		 				</view>
+		 				<view class="text-gray text-sm flex">
+		 					<view class="text-cut">
+		 						{{item.content}}
+		 					</view>
+		 				</view>
+		 			</view>
+		 			<view class="action">
+		 				<view class="text-grey text-xs">{{item.createTime}}</view>
+		 				<!-- <view class="cuIcon-notice_forbid_fill text-gray"></view> -->
+		 			</view>
+		 		</view>
 		 		<!-- <view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="getDetail" :data-inspectionId="item.id">
 		 			<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
 		 			</view>
@@ -26,7 +44,7 @@
 		 			</view>
 		 		</view> -->
 		 		
-		 		<view class="cu-item">
+		 		<!-- <view class="cu-item">
 		 			<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
 		 			</view>
 		 			<view class="content">
@@ -78,7 +96,7 @@
 		 			<view class="action">
 		 				<view class="text-grey text-xs">04-01 22:20</view>
 		 			</view>
-		 		</view>
+		 		</view> -->
 		 	</view> 
 		 </scroll-view>
 	</view>
@@ -88,14 +106,11 @@
 	export default{
 		data() {
 			return{
-				
+				inspectionList:[]
 			}
 		},
 		methods: {
 			ontrueGetList(){
-				uni.showToast({
-					title:'第4个页面'
-				})
 				uni.setNavigationBarTitle({
 				    title: '管理'
 				});
@@ -103,17 +118,46 @@
 				    frontColor: '#000000',
 				    backgroundColor: '#ffffff'
 				})
+				this.getInspectionList();
 			},
 			lower(){
 				uni.showToast({
 					title:'scroll-view的加载更多'
 				})
 				console.log("分页数据可以放这里~~~~~~嘿嘿")
+			},
+			getInspectionList(){
+				const userInfo = uni.getStorageSync('userInfo');
+				uni.request({
+					url: '/api/businessInspection/getInspectionList',
+					method: 'POST',
+					data: {
+						userId:userInfo.userId,
+						pageNo:1
+					},
+					header: {
+						'Access-Control-Allow-Origin': '*', //跨域加上头
+						'Content-Type': 'application/json'
+					},
+					success: res => {
+						console.log(res.data)
+						this.inspectionList = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			businessHandle(id){
+				uni.navigateTo({
+					url: '../../pages/inspection/inspectionHandle?inspectionId='+id
+				});
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	
+	.cu-list.menu-avatar>.cu-item .action {
+		width: 76px;
+	}
 </style>

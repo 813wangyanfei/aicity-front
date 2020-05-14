@@ -269,6 +269,7 @@
 				});
 			},
 			submit(){
+				const userInfo = uni.getStorageSync('userInfo');
 				uni.request({
 					url: '/api/businessInspection/add',
 					method: 'POST',
@@ -282,7 +283,8 @@
 						lat:this.lat,
 						attachmentList:this.attachmentList,
 						reportingDate:this.date,
-						reportingTime:this.time
+						reportingTime:this.time,
+						userId:userInfo.userId
 					},
 					header: {
 						'Access-Control-Allow-Origin': '*', //跨域加上头

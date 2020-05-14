@@ -85,7 +85,7 @@
 					</view>
 				</view>
 				
-				<view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="getDetail" :data-inspectionId="item.id">
+				<view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="getDetail(item.id)">
 					<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
 					</view>
 					<view class="content">
@@ -228,6 +228,7 @@
 						});
 					}
 				});
+				this.getInspectionList();
 				/* uni.request({
 					url: 'http://localhost:8888/test/user/list',
 					method: 'GET',
@@ -283,10 +284,11 @@
 			getInspectionList(){
 				const userInfo = uni.getStorageSync('userInfo');
 				uni.request({
-					url: '/api/getInspectionList',
+					url: '/api/businessInspection/getInspectionList',
 					method: 'POST',
 					data: {
-						userId:userInfo.userId
+						userId:userInfo.userId,
+						pageNo:1
 					},
 					header: {
 						'Access-Control-Allow-Origin': '*', //跨域加上头
@@ -294,16 +296,16 @@
 					},
 					success: res => {
 						console.log(res.data)
-						this.objectArray = res.data.data;
+						this.inspectionList = res.data.data;
 					},
 					fail: () => {},
 					complete: () => {}
 				});
 			},
-			getDetail(){
-				var inspectionId = e.currentTarget.dataset.inspectionId;
+			getDetail(id){
+				
 				uni.navigateTo({
-					url: '../../pages/inspection/inspection?inspectionId'+inspectionId
+					url: '../../pages/inspection/inspectionDetail?inspectionId='+id
 				});
 			}
 			
@@ -351,4 +353,7 @@
 			height: 100%; 
 		}
 		}
+	.cu-list.menu-avatar>.cu-item .action {
+		width: 76px;
+	}
 </style>
