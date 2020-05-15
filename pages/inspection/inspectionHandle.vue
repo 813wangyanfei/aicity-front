@@ -222,7 +222,7 @@
 			getPersonnels(){
 				const userInfo = uni.getStorageSync('userInfo');
 				uni.request({
-					url: '/api/getPersonnels',
+					url: '/api/getDownDeptUsers',
 					method: 'POST',
 					data: {
 						userId:userInfo.userId

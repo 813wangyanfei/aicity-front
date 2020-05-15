@@ -129,7 +129,7 @@
 			getInspectionList(){
 				const userInfo = uni.getStorageSync('userInfo');
 				uni.request({
-					url: '/api/businessInspection/getInspectionList',
+					url: '/api/businessInspection/getNeedHandleInspectionList',
 					method: 'POST',
 					data: {
 						userId:userInfo.userId,
