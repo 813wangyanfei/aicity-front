@@ -69,6 +69,18 @@
 			"style": {
 				"navigationBarTitleText": "业务巡查"				
 			}
+		},
+		{
+			"path": "pages/inspection/inspectionDetail",
+			"style": {
+				"navigationBarTitleText": "巡查详情"				
+			}
+		},
+		{
+			"path": "pages/inspection/inspectionHandle",
+			"style": {
+				"navigationBarTitleText": "巡查处理"				
+			}
 		}
 	],
 	"globalStyle": {

@@ -6,7 +6,7 @@
 		 			<view class="action">
 		 				<text class="cuIcon-title text-orange "></text> 待审核列表
 		 			</view>
-					<view @tap="businessHandle">查看详情</view>
+					<!-- <view @tap="businessHandle">查看详情</view> -->
 		 		</view>
 		 		<view class="cu-item" v-for="(item,index) in inspectionList" :key="index" @tap="businessHandle(item.id)">
 		 			<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">

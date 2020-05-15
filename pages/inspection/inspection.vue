@@ -167,9 +167,9 @@
 							that.imgList = res.tempFilePaths
 						}
 						const tempFilePaths = res.tempFilePaths;
-						console.log("0000")
 						//进行上传操作
 						console.log("文件路径："+tempFilePaths)
+						console.log(that.imgList)
 						uni.uploadFile({
 							url: '/api/uploadFile', //仅为示例，非真实的接口地址
 							filePath: tempFilePaths[0],
@@ -270,40 +270,62 @@
 			},
 			submit(){
 				const userInfo = uni.getStorageSync('userInfo');
-				uni.request({
-					url: '/api/businessInspection/add',
-					method: 'POST',
-					data: {
-						title:this.title,
-						content:this.content,
-						position:this.position,
-						reportingPersonnelId:this.reportingPersonnelId,
-						reportingPersonnelName:this.reportingPersonnelName,
-						lng:this.lng,
-						lat:this.lat,
-						attachmentList:this.attachmentList,
-						reportingDate:this.date,
-						reportingTime:this.time,
-						userId:userInfo.userId
-					},
-					header: {
-						'Access-Control-Allow-Origin': '*', //跨域加上头
-						'Content-Type': 'application/json'
-					},
-					success: res => {
-						console.log(res.data)
-						if(res.data.code == 0){
-							uni.showToast({
-								title:'上报成功'
-							})
-							uni.navigateTo({
-								url: '../../pages/index/index'
-							});
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				});
+				if(this.title == '' ){
+					uni.showToast({
+						title:'标题不能为空'
+					})
+				}else if(this.content == ''){
+					uni.showToast({
+						title:'内容不能为空'
+					})
+				}else if(this.position == ''){
+					uni.showToast({
+						title:'请选择位置'
+					})
+				}else if(this.lng == ''){
+					uni.showToast({
+						title:'请选择位置'
+					})
+				}else if(this.reportingPersonnelId == ''){
+					uni.showToast({
+						title:'请选择上报人员'
+					})
+				}else{
+					uni.request({
+						url: '/api/businessInspection/add',
+						method: 'POST',
+						data: {
+							title:this.title,
+							content:this.content,
+							position:this.position,
+							reportingPersonnelId:this.reportingPersonnelId,
+							reportingPersonnelName:this.reportingPersonnelName,
+							lng:this.lng,
+							lat:this.lat,
+							attachmentList:this.attachmentList,
+							reportingDate:this.date,
+							reportingTime:this.time,
+							userId:userInfo.userId
+						},
+						header: {
+							'Access-Control-Allow-Origin': '*', //跨域加上头
+							'Content-Type': 'application/json'
+						},
+						success: res => {
+							console.log(res.data)
+							if(res.data.code == 0){
+								uni.showToast({
+									title:'上报成功'
+								})
+								uni.navigateTo({
+									url: '../../pages/index/index'
+								});
+							}
+						},
+						fail: () => {},
+						complete: () => {}
+					});
+				}
 			}
 		}
 	};
