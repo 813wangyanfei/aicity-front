@@ -32,7 +32,8 @@
 					cuIcon: 'recordfill',
 					color: 'orange',
 					badge: 1,
-					name: '车辆日报表'
+					name: '车辆日报表',
+					url:'../../pages/statistics/dailyReportStatistics'
 				}, {
 					cuIcon: 'picfill',
 					color: 'yellow',

@@ -65,6 +65,12 @@
 			}
 		},
 		{
+			"path": "pages/statistics/dailyReportStatistics",
+			"style": {
+				"navigationBarTitleText": "车辆日报表"				
+			}
+		},
+		{
 			"path": "pages/inspection/inspection",
 			"style": {
 				"navigationBarTitleText": "业务巡查"				

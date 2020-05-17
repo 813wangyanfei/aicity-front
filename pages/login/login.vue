@@ -74,8 +74,11 @@
 										console.log('success');
 									}
 								})
-								uni.navigateTo({
+								/* uni.navigateTo({
 									url: '../index/index'
+								}); */
+								uni.reLaunch({
+									url: this.backpage
 								});
 							}else{
 								uni.showToast({
