@@ -126,9 +126,7 @@
 			var newhour = hour>9?hour:"0"+hour;  //小时
 			var minutes = myDate.getMinutes(); //分
 			var newMinutes = minutes>9?minutes:"0"+minutes;  //分
-			var seconds = myDate.getSeconds(); //秒
-			var newSeconds = seconds>9?seconds:"0"+seconds;  //秒
-			this.time = hour+':'+minutes;
+			this.time = hour+':'+newMinutes;
 			this.date = year+'-'+newMonth+'-'+newDate;
 			this.getPersonnels();
 		},
@@ -183,14 +181,21 @@
 							success: result => {
 								console.log("返回結果data："+result.data);
 								var temporary=JSON.parse(result.data);
-								that.attachmentList.push(temporary.data);
-								console.log("temporary"+temporary)
-								console.log("返回結果Code："+temporary.code);
-								console.log("原始文件名："+temporary.data.originalFilename);
-								console.log("文件路徑："+temporary.data.filePath);
-								console.log("新文件名："+temporary.data.fileName);
-								console.log("文件大小："+temporary.data.fileSize);
-								console.log("attachmentList:"+that.attachmentList)
+								if(temporary.code == 0){
+									that.attachmentList.push(temporary.data);
+									console.log("temporary"+temporary)
+									console.log("返回結果Code："+temporary.code);
+									console.log("原始文件名："+temporary.data.originalFilename);
+									console.log("文件路徑："+temporary.data.filePath);
+									console.log("新文件名："+temporary.data.fileName);
+									console.log("文件大小："+temporary.data.fileSize);
+									console.log("attachmentList:"+that.attachmentList)
+								}else{
+									uni.showToast({
+										title: temporary.msg
+									})
+									this.imgList = '';
+								}
 							}
 						});
 					}
