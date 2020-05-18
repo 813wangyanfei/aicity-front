@@ -70,11 +70,11 @@
     },
     "h5" : {
         "devServer" : {
-            "port" : 8080,
+            "port" : 8088,
             "disableHostCheck" : true,
             "proxy" : {
                 "/api" : {
-                    "target" : "http://localhost:8888/api/", //目标接口域名
+                    "target" : "http://localhost:8080/api/", //目标接口域名
                     "changeOrigin" : true, //是否跨域
                     "secure" : false, // 设置支持https协议的代理
                     "pathRewrite" : {

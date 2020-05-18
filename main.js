@@ -11,7 +11,16 @@ Vue.use(BaiduMap, {
 
 Vue.use(VueJsonp);
 Vue.config.productionTip = false
-Vue.prototype.websiteUrl  = 'http://localhost:8888'
+Vue.prototype.websiteUrl  = 'http://localhost:8080'
+Vue.prototype.getUser = function(backpage) {
+    var USER = uni.getStorageSync('userInfo'); //本地持久化存储
+    if (USER == '') {
+        uni.reLaunch({ url: '/pages/login/login?backpage=' + backpage });
+        return false;
+    }
+   // var user = JSON.parse(USER)
+    return USER;
+}
 
 App.mpType = 'app'
 
