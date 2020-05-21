@@ -154,7 +154,7 @@
 				var that = this;
 				uni.chooseImage({
 					count: 4, //默认9
-					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
 						console.log("res:"+res)
@@ -168,36 +168,10 @@
 						//进行上传操作
 						console.log("文件路径："+tempFilePaths)
 						console.log(that.imgList)
-						uni.uploadFile({
-							url: '/api/uploadFile', //仅为示例，非真实的接口地址
-							filePath: tempFilePaths[0],
-							name: 'file',
-							header: {
-								'Access-Control-Allow-Origin': '*' //跨域加上H头
-							},
-							formData: {
-								'user': 'test'
-							},
-							success: result => {
-								console.log("返回結果data："+result.data);
-								var temporary=JSON.parse(result.data);
-								if(temporary.code == 0){
-									that.attachmentList.push(temporary.data);
-									console.log("temporary"+temporary)
-									console.log("返回結果Code："+temporary.code);
-									console.log("原始文件名："+temporary.data.originalFilename);
-									console.log("文件路徑："+temporary.data.filePath);
-									console.log("新文件名："+temporary.data.fileName);
-									console.log("文件大小："+temporary.data.fileSize);
-									console.log("attachmentList:"+that.attachmentList)
-								}else{
-									uni.showToast({
-										title: temporary.msg
-									})
-									this.imgList = '';
-								}
-							}
+						uni.showLoading({
+							title:'上传中...'
 						});
+						that.compressImage()
 					}
 				});
 			},
@@ -221,6 +195,69 @@
 					}
 				})
 			},
+			compressImage(){
+				for(let i in this.imgList){
+					let imgFile = this.imgList[i]
+					this.getImageInfo(imgFile)
+				}
+			},
+			getImageInfo(src) {
+				let _this = this
+				uni.getImageInfo({
+					src,
+					success(res) {
+						console.log('压缩前', res)
+						let canvasWidth = res.width //图片原始长宽
+						let canvasHeight = res.height
+						let img = new Image()
+						img.src = res.path
+						let canvas = document.createElement('canvas');
+						let ctx = canvas.getContext('2d')
+						canvas.width = canvasWidth / 5
+						canvas.height = canvasHeight / 5
+						ctx.drawImage(img, 0, 0, canvasWidth / 5, canvasHeight / 5)
+						canvas.toBlob(function(fileSrc) {
+							let imgSrc = window.URL.createObjectURL(fileSrc)
+							console.log('压缩后', imgSrc)
+							_this.uploadFile(imgSrc)
+						})
+					}
+				})
+			},
+			uploadFile(filePath) {
+				let that = this
+				uni.uploadFile({
+					url: '/api/uploadFile', //仅为示例，非真实的接口地址
+					filePath: filePath,
+					name: 'file',
+					header: {
+						'Access-Control-Allow-Origin': '*' //跨域加上H头
+					},
+					formData: {
+						'user': 'test'
+					},
+					success: result => {
+						console.log("返回結果data："+result.data);
+						var temporary=JSON.parse(result.data);
+						if(temporary.code == 0){
+							uni.hideLoading()
+							that.attachmentList.push(temporary.data);
+							/* console.log("temporary"+temporary)
+							console.log("返回結果Code："+temporary.code);
+							console.log("原始文件名："+temporary.data.originalFilename);
+							console.log("文件路徑："+temporary.data.filePath);
+							console.log("新文件名："+temporary.data.fileName);
+							console.log("文件大小："+temporary.data.fileSize);
+							console.log("attachmentList:"+that.attachmentList); */
+						}else{
+							uni.showToast({
+								title: temporary.msg
+							})
+							that.imgList = '';
+						}
+					}
+				});
+			},
 			textareaBInput(e) {
 				this.textareaBValue = e.detail.value
 			},
@@ -239,20 +276,6 @@
 				});
  
 			},
-			/* uploadSuccess(result) {
-				if(result.statusCode == 200) {
-					//上传成功的回调处理
-					uni.showToast({
-						title: '上传成功',
-						icon: 'none'
-					});
-				}else{
-					uni.showToast({
-						title: '上传失败',
-						icon: 'none'
-					});
-				}
-			}, */
 			getPersonnels(){
 				const userInfo = uni.getStorageSync('userInfo');
 				uni.request({
