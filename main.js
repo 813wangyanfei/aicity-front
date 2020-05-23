@@ -11,7 +11,7 @@ Vue.use(BaiduMap, {
 
 Vue.use(VueJsonp);
 Vue.config.productionTip = false
-Vue.prototype.websiteUrl  = 'http://localhost:8080'
+Vue.prototype.websiteUrl  = 'http://39.98.75.50:9080'
 Vue.prototype.getUser = function(backpage) {
     var USER = uni.getStorageSync('userInfo'); //本地持久化存储
     if (USER == '') {

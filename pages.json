@@ -87,6 +87,12 @@
 			"style": {
 				"navigationBarTitleText": "巡查处理"				
 			}
+		},
+		{
+			"path": "pages/personnel/personnelList",
+			"style": {
+				"navigationBarTitleText": "人员列表"				
+			}
 		}
 	],
 	"globalStyle": {

@@ -32,7 +32,7 @@
 		</swiper>
 		<!--九宫格功能区域-->
 		<view class="cate-section">
-			<view class="cate-item">
+			<view class="cate-item" @click="navTo('../../pages/personnel/personnelList')" >
 				<image src="../../static/img/index/c3.png"></image>
 				<text>人员</text>
 			</view>
